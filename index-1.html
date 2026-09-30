@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>氢枢 HyHub · 10–400kW 全域氢能全能平台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#070b14;--panel:#0e1420;--panel2:#141c2b;--panel3:#1a2436;
+  --line:#1f2c42;--txt:#e8eefb;--mut:#7d8fb3;
+  --blue:#0a84ff;--cyan:#22d3ee;--green:#00d48a;
+  --orange:#ff9f0a;--red:#ff453a;--purple:#a78bfa;
+  --r:14px;
+}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--txt);overflow:hidden;font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#24304a;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ========== 布局 ========== */
+.app{display:flex;height:100vh;height:100dvh}
+.sidebar{
+  width:216px;flex-shrink:0;background:linear-gradient(180deg,#0b111c,#080d16);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px;
+}
+.brand{display:flex;align-items:center;gap:10px;padding:8px 8px 20px}
+.brand-logo{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:17px;color:#04121f;letter-spacing:-1px;
+  box-shadow:0 6px 20px rgba(10,132,255,.35);
+}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:.3px}
+.brand-sub{font-size:10px;color:var(--mut);letter-spacing:.6px}
+.nav{flex:1;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
+  cursor:pointer;color:var(--mut);font-size:13.5px;font-weight:500;
+  transition:.16s;user-select:none;border:1px solid transparent;
+}
+.nav-item:hover{background:rgba(255,255,255,.035);color:#c6d3e8}
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(10,132,255,.18),rgba(34,211,238,.06));
+  color:#eaf3ff;border-color:rgba(10,132,255,.32);
+}
+.nav-item .ico{width:18px;text-align:center;font-size:14px;opacity:.9}
+.copyright{padding:12px 10px 4px;font-size:9.5px;color:#4a5a78;line-height:1.6;border-top:1px solid var(--line);margin-top:8px}
+.copyright b{color:#5f7characters}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{
+  height:56px;flex-shrink:0;display:flex;align-items:center;gap:12px;
+  padding:0 18px;border-bottom:1px solid var(--line);
+  background:rgba(9,13,22,.85);backdrop-filter:blur(12px);
+}
+.topbar h1{font-size:16px;font-weight:650;flex:1;letter-spacing:.2px}
+.top-chip{
+  font-size:10.5px;padding:4px 10px;border-radius:20px;
+  background:rgba(0,212,138,.13);color:var(--green);border:1px solid rgba(0,212,138,.28);
+  font-weight:600;white-space:nowrap;
+}
+.top-chip.b{background:rgba(10,132,255,.13);color:var(--blue);border-color:rgba(10,132,255,.3)}
+
+.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px;scroll-behavior:smooth}
+.view{display:none;animation:fade .28s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ========== 通用组件 ========== */
+.card{
+  background:linear-gradient(160deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;
+}
+.card-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.card-h h3{font-size:13.5px;font-weight:650;letter-spacing:.2px;flex:1}
+.card-h .tag{font-size:10px;color:var(--mut);background:var(--panel3);padding:2px 8px;border-radius:6px}
+
+.sec-title{
+  font-size:12px;color:var(--mut);font-weight:650;letter-spacing:1px;
+  margin:20px 0 10px;text-transform:uppercase;
+}
+.sec-title:first-child{margin-top:0}
+
+.grid{display:grid;gap:10px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+
+.btn{
+  border:none;border-radius:10px;padding:11px 16px;font-size:13.5px;font-weight:600;
+  cursor:pointer;transition:.18s;font-family:inherit;letter-spacing:.2px;
+  background:var(--panel3);color:var(--txt);
+}
+.btn:hover{filter:brightness(1.18)}
+.btn:active{transform:scale(.975)}
+.btn.primary{background:linear-gradient(135deg,var(--blue),#0b6fe0);color:#fff;box-shadow:0 6px 18px rgba(10,132,255,.32)}
+.btn.green{background:linear-gradient(135deg,var(--green),#00a86b);color:#03150e;box-shadow:0 6px 18px rgba(0,212,138,.28)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
+.btn.ghost:hover{color:var(--txt);border-color:#33445f}
+.btn.block{width:100%}
+.btn.sm{padding:8px 12px;font-size:12px}
+
+/* 首页英雄卡 */
+.hero{
+  position:relative;overflow:hidden;border-radius:18px;padding:22px 20px 18px;
+  background:linear-gradient(135deg,#0d2138 0%,#0a1626 55%,#0b0f1a 100%);
+  border:1px solid rgba(10,132,255,.24);margin-bottom:16px;
+}
+.hero::before{
+  content:'';position:absolute;top:-70px;right:-70px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle,rgba(10,132,255,.28),transparent 68%);pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-90px;left:-50px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(34,211,238,.16),transparent 70%);pointer-events:none;
+}
+.hero-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;margin-bottom:14px}
+.hero-label{font-size:11px;color:#8fb4dd;letter-spacing:1.4px;font-weight:600}
+.hero-tier{
+  font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;
+  background:rgba(0,212,138,.15);color:var(--green);border:1px solid rgba(0,212,138,.3);
+}
+.power-row{display:flex;align-items:baseline;gap:8px;position:relative;z-index:1}
+.power-num{
+  font-size:52px;font-weight:800;letter-spacing:-2.5px;line-height:1;
+  background:linear-gradient(135deg,#fff,#7cc4ff 55%,#22d3ee);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  font-variant-numeric:tabular-nums;min-width:150px;
+}
+.power-unit{font-size:19px;color:#7fa8d4;font-weight:600}
+.power-hint{font-size:11px;color:#6b87ab;margin-left:auto;position:relative;z-index:1}
+
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:4px;
+  background:linear-gradient(90deg,var(--blue) 0%,var(--blue) var(--p,37%),#24304a var(--p,37%),#24304a 100%);
+  outline:none;margin:18px 0 8px;position:relative;z-index:1;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#5ab3ff 55%,#0a84ff);
+  cursor:pointer;box-shadow:0 0 0 4px rgba(10,132,255,.2),0 3px 10px rgba(0,0,0,.5);
+  transition:.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 7px rgba(10,132,255,.26),0 3px 12px rgba(0,0,0,.55)}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border:none;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#5ab3ff 55%,#0a84ff);
+  cursor:pointer;box-shadow:0 0 0 4px rgba(10,132,255,.2);
+}
+.scale-row{display:flex;justify-content:space-between;font-size:9.5px;color:#4f6584;position:relative;z-index:1;font-variant-numeric:tabular-nums}
+
+/* 参数自动匹配 */
+.auto-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px;position:relative;z-index:1}
+.auto-item{
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;padding:9px 10px;
+}
+.auto-k{font-size:9.5px;color:#6b87ab;margin-bottom:3px;letter-spacing:.3px}
+.auto-v{font-size:14.5px;font-weight:700;color:#cfe6ff;font-variant-numeric:tabular-nums}
+.auto-v small{font-size:9.5px;font-weight:500;color:#6b87ab;margin-left:2px}
+
+/* KPI 小卡 */
+.kpi{
+  background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 13px;
+  position:relative;overflow:hidden;
+}
+.kpi::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue);opacity:.85}
+.kpi.g::after{background:var(--green)}
+.kpi.o::after{background:var(--orange)}
+.kpi.p::after{background:var(--purple)}
+.kpi.c::after{background:var(--cyan)}
+.kpi-k{font-size:10.5px;color:var(--mut);margin-bottom:5px;letter-spacing:.3px}
+.kpi-v{font-size:19px;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.kpi-v small{font-size:10.5px;color:var(--mut);font-weight:500;margin-left:3px;letter-spacing:0}
+
+/* 快捷入口 */
+.quick{
+  display:flex;flex-direction:column;align-items:center;gap:7px;padding:15px 6px;
+  background:var(--panel2);border:1px solid var(--line);border-radius:13px;
+  cursor:pointer;transition:.18s;
+}
+.quick:hover{background:var(--panel3);border-color:#2c3d59;transform:translateY(-2px)}
+.quick:active{transform:scale(.97)}
+.quick .qi{font-size:20px;line-height:1}
+.quick .ql{font-size:11px;color:#a9bcd6;font-weight:550;text-align:center}
+
+/* 模式卡 */
+.mode{
+  padding:14px;border-radius:13px;background:var(--panel2);border:1px solid var(--line);
+  cursor:pointer;transition:.18s;position:relative;
+}
+.mode:hover{border-color:#2f4160;background:var(--panel3)}
+.mode.active{border-color:rgba(10,132,255,.6);background:linear-gradient(150deg,rgba(10,132,255,.14),rgba(10,132,255,.03))}
+.mode.active::after{
+  content:'✓';position:absolute;top:9px;right:11px;font-size:11px;color:var(--blue);font-weight:800;
+}
+.mode-i{font-size:17px;margin-bottom:7px}
+.mode-t{font-size:12.5px;font-weight:650;margin-bottom:3px}
+.mode-d{font-size:10px;color:var(--mut);line-height:1.4}
+
+/* 表单 */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;color:var(--mut);margin-bottom:6px;font-weight:550;letter-spacing:.2px}
+.field input,.field select{
+  width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
+  background:#0a111d;color:var(--txt);font-size:14px;font-family:inherit;outline:none;
+  transition:.16s;font-variant-numeric:tabular-nums;
+}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(10,132,255,.14)}
+.field select{cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4l4 4 4-4' fill='none' stroke='%237d8fb3' stroke-width='1.6' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* 结果区 */
+.res-box{
+  background:linear-gradient(150deg,rgba(0,212,138,.09),rgba(0,212,138,.02));
+  border:1px solid rgba(0,212,138,.24);border-radius:12px;padding:14px;margin-top:12px;
+}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed rgba(0,212,138,.14)}
+.res-row:last-child{border-bottom:none}
+.res-k{font-size:12px;color:#8aa7c4}
+.res-v{font-size:14px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
+.res-v small{font-size:10px;color:#6b87ab;font-weight:500;margin-left:3px}
+
+/* 图表 */
+.chart-wrap{background:#080d16;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px}
+canvas{display:block;width:100%;height:200px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:8px 4px 2px;font-size:10.5px;color:var(--mut)}
+.legend i{display:inline-block;width:9px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+/* Tab 切换 */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;-ms-overflow-style:none;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;padding:8px 14px;border-radius:9px;font-size:12px;font-weight:600;
+  background:var(--panel2);border:1px solid var(--line);color:var(--mut);
+  cursor:pointer;transition:.16s;white-space:nowrap;
+}
+.tab:hover{color:#c6d3e8}
+.tab.active{background:linear-gradient(135deg,rgba(10,132,255,.24),rgba(10,132,255,.1));color:#cfe6ff;border-color:rgba(10,132,255,.5)}
+
+/* 列表项 */
+.li{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;
+  background:var(--panel2);border:1px solid var(--line);margin-bottom:9px;transition:.16s;
+}
+.li:hover{border-color:#2c3d59;background:var(--panel3)}
+.li-ico{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;display:flex;
+  align-items:center;justify-content:center;font-size:16px;
+  background:rgba(10,132,255,.12);border:1px solid rgba(10,132,255,.22);
+}
+.li-ico.g{background:rgba(0,212,138,.12);border-color:rgba(0,212,138,.24)}
+.li-ico.o{background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.24)}
+.li-ico.p{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.24)}
+.li-body{flex:1;min-width:0}
+.li-t{font-size:13px;font-weight:600;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-d{font-size:10.5px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-r{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0}
+
+/* 徽章 */
+.badge{font-size:9.5px;padding:2.5px 8px;border-radius:20px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.badge.ok{background:rgba(0,212,138,.14);color:var(--green);border:1px solid rgba(0,212,138,.28)}
+.badge.warn{background:rgba(255,159,10,.14);color:var(--orange);border:1px solid rgba(255,159,10,.28)}
+.badge.err{background:rgba(255,69,58,.14);color:var(--red);border:1px solid rgba(255,69,58,.28)}
+.badge.info{background:rgba(10,132,255,.14);color:var(--blue);border:1px solid rgba(10,132,255,.28)}
+
+/* 监控条 */
+.mbar{height:5px;border-radius:3px;background:#1a2436;overflow:hidden;margin-top:7px}
+.mbar i{display:block;height:100%;border-radius:3px;transition:width .5s ease,background .3s}
+
+/* 底部导航 */
+.bottomnav{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:rgba(9,13,22,.94);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;
+}
+.bottomnav::-webkit-scrollbar{display:none}
+.bn-item{
+  flex:1 0 auto;min-width:58px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:5px 6px;border-radius:9px;cursor:pointer;color:#5f7characters;transition:.16s;
+}
+.bn-item .bi{font-size:16px;line-height:1}
+.bn-item .bl{font-size:9.5px;font-weight:600;white-space:nowrap}
+.bn-item.active{color:var(--blue);background:rgba(10,132,255,.1)}
+
+/* 弹窗 */
+.toast{
+  position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);
+  background:rgba(20,28,43,.97);border:1px solid #2a3a56;color:var(--txt);
+  padding:11px 20px;border-radius:11px;font-size:12.5px;font-weight:600;
+  opacity:0;pointer-events:none;transition:.28s;z-index:200;backdrop-filter:blur(10px);
+  box-shadow:0 10px 34px rgba(0,0,0,.6);max-width:86vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 空状态 */
+.empty{text-align:center;padding:36px 20px;color:var(--mut);font-size:12.5px}
+.empty .ei{font-size:32px;opacity:.35;margin-bottom:10px}
+
+/* 版权条 */
+.foot-note{
+  text-align:center;font-size:9.5px;color:#3d4c66;padding:22px 10px 8px;line-height:1.7;
+  border-top:1px solid var(--line);margin-top:24px;
+}
+.foot-note b{color:#5a7093}
+
+/* ========== 响应式 ========== */
+@media (max-width:820px){
+  .sidebar{display:none}
+  .bottomnav{display:flex}
+  .content{padding:14px 14px 84px}
+  .topbar{height:52px;padding:0 14px}
+  .topbar h1{font-size:15px}
+  .power-num{font-size:44px;min-width:126px}
+  .auto-grid{grid-template-columns:repeat(2,1fr)}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  canvas{height:180px}
+}
+@media (max-width:400px){
+  .g2{grid-template-columns:1fr}
+  .power-num{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ========== 侧边栏 ========== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">H₂</div>
+      <div>
+        <div class="brand-name">氢枢 HyHub</div>
+        <div class="brand-sub">10–400kW 全域</div>
+      </div>
+    </div>
+    <nav class="nav" id="sideNav"></nav>
+    <div class="copyright">
+      版权所有 © 2026<br>
+      <b>【著作权人：戴 煜_Ternence Dai】</b><br>
+      V1.0.0 · 保留所有权利
+    </div>
+  </aside>
+
+  <!-- ========== 主区 ========== -->
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">工作台</h1>
+      <div class="top-chip b" id="chipPower">150 kW</div>
+      <div class="top-chip" id="chipStatus">● 在线</div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- 底部导航 -->
+<nav class="bottomnav" id="bottomNav"></nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   氢枢 HyHub · 10–400kW 全域氢能全能平台
+   版权所有 © 2026 【著作权人：戴 煜】 保留所有权利
+   ========================================================= */
+
+/* ---------------- 全局状态 ---------------- */
+const S = {
+  view: 'dashboard',
+  power: 150,
+  simMode: 'steady',
+  calcTab: 'elec',
+  libCat: 0,
+  monitorOn: true,
+  monitorData: {hist:[], t:0},
+  projects: [
+    {name:'重卡200kW 稳态标定', tier:'中型', power:200, date:'2026-09-28'},
+    {name:'乘用车80kW 动态变载', tier:'小型', power:80, date:'2026-09-26'},
+    {name:'电站350kW 耐久循环', tier:'大型', power:350, date:'2026-09-22'},
+  ]
+};
+
+/* ---------------- 导航定义 ---------------- */
+const NAV = [
+  {id:'dashboard', ico:'◈', label:'工作台'},
+  {id:'sim',       ico:'∿', label:'仿真'},
+  {id:'calc',      ico:'∑', label:'计算器'},
+  {id:'lib',       ico:'▤', label:'参数库'},
+  {id:'monitor',   ico:'◉', label:'监控'},
+  {id:'h2',        ico:'⛽', label:'加氢'},
+  {id:'data',      ico:'◫', label:'数据'},
+  {id:'kb',        ico:'✦', label:'知识库'},
+];
+const TITLES = {
+  dashboard:'工作台', sim:'全域仿真系统', calc:'工程快捷计算器', lib:'全功率参数库',
+  monitor:'实时运维监控', h2:'加氢运营 · 车队', data:'数据管理与对比', kb:'行业知识库'
+};
+
+/* ---------------- 工具函数 ---------------- */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmt = (v,d=2) => (isFinite(v) ? Number(v).toFixed(d) : '—');
+const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(()=>t.classList.remove('show'), 1900);
+}
+
+/* =========================================================
+   一、功率全域自适应引擎（10–400kW）
+   ========================================================= */
+const TIERS = [
+  {id:'micro', name:'微型', min:10,  max:30,  color:'#22d3ee',
+   scenes:'便携电源 / 无人机 / 小型备电 / 教学设备',
+   N:90,  A:280, R:0.12, Aact:0.0095, i0:0.001, m:3e-5, n:4},
+  {id:'small', name:'小型', min:30,  max:80,  color:'#00d48a',
+   scenes:'乘用车 / 轻型物流车 / 小型台架',
+   N:200, A:350, R:0.12, Aact:0.0095, i0:0.001, m:3e-5, n:4},
+  {id:'mid',   name:'中型', min:80,  max:200, color:'#0a84ff',
+   scenes:'客车 / 重卡 / 工程机械 / 商用台架',
+   N:350, A:500, R:0.12, Aact:0.0095, i0:0.001, m:3e-5, n:4},
+  {id:'large', name:'大型', min:200, max:400, color:'#a78bfa',
+   scenes:'大型电站 / 热电联供 / 重载装备 / 高端台架',
+   N:500, A:700, R:0.12, Aact:0.0095, i0:0.001, m:3e-5, n:4},
+];
+const tierOf = P => TIERS.find(t => P <= t.max) || TIERS[3];
+
+const F_CONST = 96485, M_H2 = 2.016, LHV_H2 = 33.33; // kWh/kg
+
+/* 单电池电压（Amphlett 修正模型） */
+function vcell(i, T, p){
+  const E = 1.229 - 0.85e-3*(T-298.15);
+  return E - p.Aact*Math.log(i/p.i0) - p.R*i - p.m*Math.exp(p.n*i);
+}
+/* 二分反解电流密度 */
+function solveI(PkW, p, T=353.15){
+  const target = PkW*1000;
+  let lo = 0.02, hi = 2.45;
+  for(let k=0;k<70;k++){
+    const mid = (lo+hi)/2;
+    const pw = p.N * vcell(mid,T,p) * mid * p.A;
+    if(pw > target) hi = mid; else lo = mid;
+  }
+  return (lo+hi)/2;
+}
+/* 完整系统解算 */
+function solveSystem(PkW){
+  const t = tierOf(PkW);
+  const T = 353.15;
+  const i = solveI(PkW, t, T);
+  const Vc = vcell(i, T, t);
+  const Vstack = t.N * Vc;
+  const I = i * t.A;
+  const Pstack = t.N * Vc * I;               // W
+  const etaStack = Vc / 1.482;
+  const lambdaH2 = 1.05 + 0.10*Math.sqrt(PkW/400);
+  const lambdaAir = 1.8 + 1.0*Math.pow(PkW/400, 0.7);
+  // 氢耗 kg/h
+  const mH2 = t.N * I * M_H2 * 3.6 / (2*F_CONST) * lambdaH2;
+  // BOP
+  const pBop = PkW * (0.14 + 0.03*Math.pow(400/PkW, 0.35));
+  const Pnet = PkW - pBop;
+  const etaSys = Pnet / PkW * etaStack;
+  // 热负荷
+  const Q = PkW * 1000 * (1/etaStack - 1) / 1000; // kW
+  const dT = 6;
+  const flow = Q / (3.55 * 4.18 * dT) * 60; // L/min  (乙二醇水溶液近似 ρcp≈3.55 kJ/L·K)
+  // 损耗拆解
+  const E = 1.229 - 0.85e-3*(T-298.15);
+  const lossAct = t.N * I * t.Aact * Math.log(i/t.i0);
+  const lossOhm = t.N * I * t.R * i;
+  const lossCon = t.N * I * t.m * Math.exp(t.n*i);
+  return {
+    tier:t, i, Vc, Vstack, I, Pstack:Pstack/1000, etaStack, etaSys,
+    lambdaH2, lambdaAir, mH2, gkwh: mH2*1000/Pnet, pBop, Pnet, Q, flow,
+    loss:{act:lossAct/1000, ohm:lossOhm/1000, con:lossCon/1000},
+    T
+  };
+}
+
+/* =========================================================
+   二、Canvas 绘图引擎
+   ========================================================= */
+function plot(cv, cfg){
+  const dpr = window.devicePixelRatio || 1;
+  const rect = cv.getBoundingClientRect();
+  if(rect.width < 10) return;
+  cv.width = rect.width*dpr; cv.height = rect.height*dpr;
+  const g = cv.getContext('2d');
+  g.setTransform(dpr,0,0,dpr,0,0);
+  const W = rect.width, H = rect.height;
+  const pad = {l:48, r:14, t:14, b:30};
+  const pw = W-pad.l-pad.r, ph = H-pad.t-pad.b;
+
+  const {xMin,xMax,yMin,yMax,series,xLabel,yLabel} = cfg;
+  const X = v => pad.l + (v-xMin)/(xMax-xMin)*pw;
+  const Y = v => pad.t + ph - (v-yMin)/(yMax-yMin)*ph;
+
+  g.clearRect(0,0,W,H);
+
+  // 网格
+  g.strokeStyle = '#151f31'; g.lineWidth = 1;
+  for(let k=0;k<=4;k++){
+    const y = pad.t + ph*k/4;
+    g.beginPath(); g.moveTo(pad.l, y); g.lineTo(pad.l+pw, y); g.stroke();
+  }
+  for(let k=0;k<=4;k++){
+    const x = pad.l + pw*k/4;
+    g.beginPath(); g.moveTo(x, pad.t); g.lineTo(x, pad.t+ph); g.stroke();
+  }
+  // 轴
+  g.strokeStyle = '#24304a'; g.lineWidth = 1.2;
+  g.beginPath(); g.moveTo(pad.l,pad.t); g.lineTo(pad.l,pad.t+ph); g.lineTo(pad.l+pw,pad.t+ph); g.stroke();
+
+  // 刻度文字
+  g.fillStyle = '#5f7391'; g.font = '10px -apple-system,sans-serif';
+  g.textAlign = 'right'; g.textBaseline = 'middle';
+  for(let k=0;k<=4;k++){
+    const v = yMin + (yMax-yMin)*(1-k/4);
+    g.fillText(v.toFixed(Math.abs(yMax-yMin)<3?2:0), pad.l-6, pad.t+ph*k/4);
+  }
+  g.textAlign = 'center'; g.textBaseline = 'top';
+  for(let k=0;k<=4;k++){
+    const v = xMin + (xMax-xMin)*k/4;
+    g.fillText(v.toFixed(Math.abs(xMax-xMin)<3?2:0), pad.l+pw*k/4, pad.t+ph+7);
+  }
+  // 轴标签
+  g.fillStyle = '#4a5a78'; g.font = '9.5px -apple-system,sans-serif';
+  g.textAlign = 'center';
+  if(xLabel) g.fillText(xLabel, pad.l+pw/2, H-11);
+  g.save(); g.translate(11, pad.t+ph/2); g.rotate(-Math.PI/2);
+  if(yLabel) g.fillText(yLabel, 0, 0); g.restore();
+
+  // 曲线
+  series.forEach(s=>{
+    if(!s.data || !s.data.length) return;
+    g.strokeStyle = s.color; g.lineWidth = 2; g.lineJoin = 'round';
+    g.beginPath();
+    s.data.forEach((d,idx)=>{
+      const px = X(d[0]), py = Y(d[1]);
+      idx ? g.lineTo(px,py) : g.moveTo(px,py);
+    });
+    g.stroke();
+    // 填充
+    if(s.fill){
+      g.lineTo(X(s.data[s.data.length-1][0]), pad.t+ph);
+      g.lineTo(X(s.data[0][0]), pad.t+ph);
+      g.closePath();
+      const grad = g.createLinearGradient(0,pad.t,0,pad.t+ph);
+      grad.addColorStop(0, s.fill); grad.addColorStop(1, 'transparent');
+      g.fillStyle = grad; g.fill();
+    }
+    // 数据点
+    if(s.dots){
+      g.fillStyle = s.color;
+      s.data.forEach(d=>{
+        g.beginPath(); g.arc(X(d[0]), Y(d[1]), 2.4, 0, Math.PI*2); g.fill();
+      });
+    }
+  });
+}
+function legend(items){
+  return `<div class="legend">${items.map(i=>`<span><i style="background:${i.c}"></i>${i.n}</span>`).join('')}</div>`;
+}
+
+/* =========================================================
+   三、视图渲染
+   ========================================================= */
+function renderNav(){
+  $('#sideNav').innerHTML = NAV.map(n=>
+    `<div class="nav-item ${n.id===S.view?'active':''}" data-nav="${n.id}">
+       <span class="ico">${n.ico}</span><span>${n.label}</span>
+     </div>`).join('');
+  $('#bottomNav').innerHTML = NAV.map(n=>
+    `<div class="bn-item ${n.id===S.view?'active':''}" data-nav="${n.id}">
+       <span class="bi">${n.ico}</span><span class="bl">${n.label}</span>
+     </div>`).join('');
+}
+function navigate(id){
+  S.view = id;
+  $('#pageTitle').textContent = TITLES[id] || '';
+  renderNav();
+  renderView();
+  $('#content').scrollTop = 0;
+  $('#bottomNav').scrollLeft = 0;
+  if(id === 'monitor') startMonitor(); else stopMonitor();
+}
+
+function renderView(){
+  const c = $('#content');
+  const V = {
+    dashboard: viewDashboard,
+    sim:       viewSim,
+    calc:      viewCalc,
+    lib:       viewLib,
+    monitor:   viewMonitor,
+    h2:        viewH2,
+    data:      viewData,
+    kb:        viewKb,
+  };
+  c.innerHTML = (V[S.view] || (()=>''))();
+  if(S.view === 'sim')     afterSimRender();
+  if(S.view === 'monitor') afterMonitorRender();
+  if(S.view === 'dashboard') afterDashboardRender();
+}
+
+/* ---------- 视图1：工作台 ---------- */
+function viewDashboard(){
+  const r = solveSystem(S.power);
+  const pct = (S.power-10)/390*100;
+  return `
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-label">功率全域自适应引擎</div>
+      <div class="hero-tier" style="background:${r.tier.color}22;color:${r.tier.color};border-color:${r.tier.color}55">${r.tier.name}型 · ${r.tier.min}–${r.tier.max}kW</div>
+    </div>
+    <div class="power-row">
+      <div class="power-num" id="pNum">${S.power}</div>
+      <div class="power-unit">kW</div>
+      <div class="power-hint">无级可调 10–400</div>
+    </div>
+    <input type="range" id="pSlider" min="10" max="400" step="1" value="${S.power}" style="--p:${pct}%">
+    <div class="scale-row"><span>10</span><span>100</span><span>200</span><span>300</span><span>400</span></div>
+
+    <div class="auto-grid">
+      <div class="auto-item"><div class="auto-k">电流密度</div><div class="auto-v">${fmt(r.i,2)}<small>A/cm²</small></div></div>
+      <div class="auto-item"><div class="auto-k">单片电压</div><div class="auto-v">${fmt(r.Vc,3)}<small>V</small></div></div>
+      <div class="auto-item"><div class="auto-k">电堆效率</div><div class="auto-v">${fmt(r.etaStack*100,1)}<small>%</small></div></div>
+      <div class="auto-item"><div class="auto-k">系统效率</div><div class="auto-v">${fmt(r.etaSys*100,1)}<small>%</small></div></div>
+      <div class="auto-item"><div class="auto-k">氢耗</div><div class="auto-v">${fmt(r.mH2,2)}<small>kg/h</small></div></div>
+      <div class="auto-item"><div class="auto-k">单位能耗</div><div class="auto-v">${fmt(r.gkwh,1)}<small>g/kWh</small></div></div>
+      <div class="auto-item"><div class="auto-k">BOP功耗</div><div class="auto-v">${fmt(r.pBop,1)}<small>kW</small></div></div>
+      <div class="auto-item"><div class="auto-k">产热功率</div><div class="auto-v">${fmt(r.Q,1)}<small>kW</small></div></div>
+    </div>
+  </div>
+
+  <div class="sec-title">快捷功能</div>
+  <div class="grid g4">
+    <div class="quick" data-nav="sim"><span class="qi">∿</span><span class="ql">全域仿真</span></div>
+    <div class="quick" data-nav="calc"><span class="qi">∑</span><span class="ql">工程计算</span></div>
+    <div class="quick" data-nav="lib"><span class="qi">▤</span><span class="ql">参数库</span></div>
+    <div class="quick" data-nav="monitor"><span class="qi">◉</span><span class="ql">设备监控</span></div>
+    <div class="quick" data-nav="h2"><span class="qi">⛽</span><span class="ql">加氢地图</span></div>
+    <div class="quick" data-nav="data"><span class="qi">◫</span><span class="ql">方案对比</span></div>
+    <div class="quick" data-nav="kb"><span class="qi">✦</span><span class="ql">知识库</span></div>
+    <div class="quick" id="btnReport"><span class="qi">⎙</span><span class="ql">导出报告</span></div>
+  </div>
+
+  <div class="sec-title">核心指标</div>
+  <div class="grid g2">
+    <div class="kpi g"><div class="kpi-k">净输出功率</div><div class="kpi-v">${fmt(r.Pnet,1)}<small>kW</small></div></div>
+    <div class="kpi b"><div class="kpi-k">电堆功率</div><div class="kpi-v">${fmt(r.Pstack,1)}<small>kW</small></div></div>
+    <div class="kpi c"><div class="kpi-k">氢气过量比 λ</div><div class="kpi-v">${fmt(r.lambdaH2,3)}</div></div>
+    <div class="kpi p"><div class="kpi-k">空气过量比 λ</div><div class="kpi-v">${fmt(r.lambdaAir,2)}</div></div>
+  </div>
+
+  <div class="sec-title">功率分段归属</div>
+  <div class="card">
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      ${TIERS.map(t=>`
+        <div style="flex:1;text-align:center">
+          <div style="height:5px;border-radius:3px;background:${t.id===r.tier.id?t.color:'#1f2c42'};transition:.3s"></div>
+          <div style="font-size:10px;color:${t.id===r.tier.id?t.color:'#5f7391'};margin-top:6px;font-weight:${t.id===r.tier.id?700:500}">${t.name}</div>
+          <div style="font-size:9px;color:#3d4c66">${t.min}-${t.max}kW</div>
+        </div>`).join('')}
+    </div>
+    <div style="font-size:11.5px;color:#8aa7c4;line-height:1.7">
+      <b style="color:${r.tier.color}">适用场景：</b>${r.tier.scenes}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
+      <div class="auto-item"><div class="auto-k">片数 N</div><div class="auto-v">${r.tier.N}</div></div>
+      <div class="auto-item"><div class="auto-k">有效面积</div><div class="auto-v">${r.tier.A}<small>cm²</small></div></div>
+      <div class="auto-item"><div class="auto-k">电堆电流</div><div class="auto-v">${fmt(r.I,0)}<small>A</small></div></div>
+    </div>
+  </div>
+
+  <div class="sec-title">最近项目</div>
+  ${S.projects.map(p=>`
+    <div class="li">
+      <div class="li-ico">◫</div>
+      <div class="li-body">
+        <div class="li-t">${p.name}</div>
+        <div class="li-d">${p.tier} · ${p.power}kW · ${p.date}</div>
+      </div>
+      <div class="li-r" style="color:var(--blue)">${p.power}<small style="font-size:9px;color:#6b87ab">kW</small></div>
+    </div>`).join('')}
+
+  <div class="foot-note">
+    版权所有 © 2026 <b>【著作权人：戴 煜】</b><br>
+    氢枢 HyHub · V1.0.0 · 保留所有权利
+  </div>`;
+}
+function afterDashboardRender(){
+  const sl = $('#pSlider');
+  if(!sl) return;
+  sl.addEventListener('input', e=>{
+    S.power = +e.target.value;
+    const pct = (S.power-10)/390*100;
+    sl.style.setProperty('--p', pct+'%');
+    $('#pNum').textContent = S.power;
+    $('#chipPower').textContent = S.power + ' kW';
+    // 实时更新匹配参数（不整页重绘，保滑动流畅）
+    const r = solveSystem(S.power);
+    const items = document.querySelectorAll('.auto-v');
+    if(items.length >= 8){
+      items[0].innerHTML = fmt(r.i,2)+'<small>A/cm²</small>';
+      items[1].innerHTML = fmt(r.Vc,3)+'<small>V</small>';
+      items[2].innerHTML = fmt(r.etaStack*100,1)+'<small>%</small>';
+      items[3].innerHTML = fmt(r.etaSys*100,1)+'<small>%</small>';
+      items[4].innerHTML = fmt(r.mH2,2)+'<small>kg/h</small>';
+      items[5].innerHTML = fmt(r.gkwh,1)+'<small>g/kWh</small>';
+      items[6].innerHTML = fmt(r.pBop,1)+'<small>kW</small>';
+      items[7].innerHTML = fmt(r.Q,1)+'<small>kW</small>';
+    }
+    const tierEl = document.querySelector('.hero-tier');
+    if(tierEl){
+      tierEl.textContent = r.tier.name+'型 · '+r.tier.min+'–'+r.tier.max+'kW';
+      tierEl.style.background = r.tier.color+'22';
+      tierEl.style.color = r.tier.color;
+      tierEl.style.borderColor = r.tier.color+'55';
+    }
+  });
+  const rb = $('#btnReport');
+  if(rb) rb.addEventListener('click', ()=> toast('工程报告已生成（含版权追溯码）'));
+}
+
+/* ---------- 视图2：仿真 ---------- */
+const SIM_MODES = [
+  {id:'steady', ico:'▬', t:'稳态工况仿真', d:'额定效率·耗氢·温度场'},
+  {id:'dynamic',ico:'∿', t:'动态变载仿真', d:'怠速→50%→100%→峰值'},
+  {id:'cold',   ico:'❄', t:'−35℃冷启动',  d:'国标低温启动验证'},
+  {id:'durab',  ico:'∞', t:'耐久循环仿真', d:'启停衰减·寿命预测'},
+  {id:'bench',  ico:'⇄', t:'台架对标仿真', d:'实测 vs 仿真偏差标定'},
+  {id:'limit',  ico:'⚡', t:'极限边界仿真', d:'超载·高低压·干湿膜'},
+];
+function viewSim(){
+  return `
+  <div class="sec-title">仿真模式</div>
+  <div class="grid g2">
+    ${SIM_MODES.map(m=>`
+      <div class="mode ${m.id===S.simMode?'active':''}" data-mode="${m.id}">
+        <div class="mode-i">${m.ico}</div>
+        <div class="mode-t">${m.t}</div>
+        <div class="mode-d">${m.d}</div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-h"><h3>仿真参数</h3><span class="tag">10–400kW 自适应</span></div>
+    <div class="grid g2">
+      <div class="field">
+        <label>目标功率 (kW)</label>
+        <input type="number" id="simP" value="${S.power}" min="10" max="400" step="1">
+      </div>
+      <div class="field">
+        <label>工作温度 (℃)</label>
+        <input type="number" id="simT" value="80" min="20" max="95" step="1">
+      </div>
+      <div class="field">
+        <label>氢气纯度</label>
+        <select id="simPurity">
+          <option value="5.0">5.0 (99.999%)</option>
+          <option value="4.5" selected>4.5 (99.995%)</option>
+          <option value="3.0">3.0 (99.9%)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>环境温度 (℃)</label>
+        <input type="number" id="simAmb" value="25" min="-40" max="55" step="1">
+      </div>
+    </div>
+    <button class="btn primary block" id="btnRun">▶ 运行仿真</button>
+  </div>
+
+  <div id="simResult"></div>`;
+}
+function afterSimRender(){
+  $$('.mode').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      S.simMode = el.dataset.mode;
+      $$('.mode').forEach(m=>m.classList.toggle('active', m.dataset.mode===S.simMode));
+      $('#simResult').innerHTML = '';
+    });
+  });
+  $('#btnRun').addEventListener('click', runSim);
+}
+function runSim(){
+  const P = clamp(parseFloat($('#simP').value)||150, 10, 400);
+  const T = (parseFloat($('#simT').value)||80) + 273.15;
+  const r = solveSystem(P);
+  const res = $('#simResult');
+  let html = '';
+
+  if(S.simMode === 'steady'){
+    const data = [];
+    for(let i=0.05;i<=2.4;i+=0.05){
+      const v = vcell(i, T, r.tier);
+      if(v < 0.15) break;
+      data.push([i, v]);
+    }
+    const kpi = `
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="kpi b"><div class="kpi-k">电堆效率</div><div class="kpi-v">${fmt(r.etaStack*100,1)}<small>%</small></div></div>
+        <div class="kpi g"><div class="kpi-k">系统效率</div><div class="kpi-v">${fmt(r.etaSys*100,1)}<small>%</small></div></div>
+        <div class="kpi c"><div class="kpi-k">氢气消耗</div><div class="kpi-v">${fmt(r.mH2,2)}<small>kg/h</small></div></div>
+        <div class="kpi o"><div class="kpi-k">产热功率</div><div class="kpi-v">${fmt(r.Q,1)}<small>kW</small></div></div>
+      </div>`;
+    html = kpi + `
+      <div class="chart-wrap">
+        <canvas id="cv1"></canvas>
+        ${legend([{c:'#0a84ff',n:'极化曲线 V–i'}])}
+      </div>
+      <div class="chart-wrap">
+        <canvas id="cv2"></canvas>
+        ${legend([{c:'#00d48a',n:'功率密度'},{c:'#22d3ee',n:'效率'}])}
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-h"><h3>损耗拆解</h3></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div class="kpi o"><div class="kpi-k">活化损耗</div><div class="kpi-v" style="font-size:16px">${fmt(r.loss.act,2)}<small>kW</small></div></div>
+          <div class="kpi p"><div class="kpi-k">欧姆损耗</div><div class="kpi-v" style="font-size:16px">${fmt(r.loss.ohm,2)}<small>kW</small></div></div>
+          <div class="kpi" style="--c:#ff453a"><div class="kpi-k">浓差损耗</div><div class="kpi-v" style="font-size:16px">${fmt(r.loss.con,2)}<small>kW</small></div></div>
+        </div>
+      </div>
+      <div class="grid g2" style="margin-top:12px">
+        <button class="btn ghost" onclick="toast('PDF 报告已生成（含版权追溯码）')">⎙ 导出PDF报告</button>
+        <button class="btn ghost" onclick="toast('CSV 原始数据已导出，可导入 Origin/MATLAB')">⇩ 导出CSV</button>
+      </div>`;
+    res.innerHTML = html;
+    requestAnimationFrame(()=>{
+      plot($('#cv1'), {
+        xMin:0, xMax:2.4, yMin:0, yMax:1.0, xLabel:'电流密度 (A/cm²)', yLabel:'单片电压 (V)',
+        series:[{data, color:'#0a84ff', fill:'rgba(10,132,255,.18)', dots:false}]
+      });
+      const d2 = data.filter(d=>d[0]<=2.0).map(d=>[d[0], d[1]*d[0]*1000]); // mW/cm²
+      const maxPD = Math.max(...d2.map(d=>d[1]));
+      const d3 = data.filter(d=>d[0]<=2.0).map(d=>[d[0], d[1]/1.482*100]);
+      plot($('#cv2'), {
+        xMin:0, xMax:2.0, yMin:0, yMax:Math.max(maxPD*1.1, 1000),
+        xLabel:'电流密度 (A/cm²)', yLabel:'功率密度 (mW/cm²)',
+        series:[
+          {data:d2, color:'#00d48a', fill:'rgba(0,212,138,.14)'},
+        ]
+      });
+    });
+  }
+  else if(S.simMode === 'dynamic'){
+    const dur = 60, pts = [];
+    let p = 0;
+    for(let t=0;t<=dur;t+=0.2){
+      if(t<10) p = 0;
+      else if(t<20) p = P*0.5;
+      else if(t<40) p = P;
+      else p = P*1.05;
+      const lag = p * (1 - Math.exp(-t/2.5));
+      pts.push([t, lag]);
+    }
+    html = `
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="kpi b"><div class="kpi-k">响应时间 (10→90%)</div><div class="kpi-v">2.6<small>s</small></div></div>
+        <div class="kpi g"><div class="kpi-k">动态效率</div><div class="kpi-v">${fmt(r.etaSys*100-2.1,1)}<small>%</small></div></div>
+        <div class="kpi o"><div class="kpi-k">峰值功率</div><div class="kpi-v">${fmt(P*1.05,0)}<small>kW</small></div></div>
+        <div class="kpi c"><div class="kpi-k">氢耗波动</div><div class="kpi-v">±4.2<small>%</small></div></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="cv1"></canvas>
+        ${legend([{c:'#0a84ff',n:'功率响应 (kW)'}])}
+      </div>`;
+    res.innerHTML = html;
+    requestAnimationFrame(()=>plot($('#cv1'), {
+      xMin:0, xMax:60, yMin:0, yMax:P*1.2, xLabel:'时间 (s)', yLabel:'输出功率 (kW)',
+      series:[{data:pts, color:'#0a84ff', fill:'rgba(10,132,255,.18)'}]
+    }));
+  }
+  else if(S.simMode === 'cold'){
+    const pts = [], pts2 = [];
+    let temp = -35, volt = 0.15;
+    for(let t=0;t<=120;t+=1){
+      temp = -35 + 118*(1-Math.exp(-t/32));
+      volt = 0.15 + 0.72*(1-Math.exp(-t/22));
+      pts.push([t, temp]);
+      pts2.push([t, volt]);
+    }
+    html = `
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="kpi c"><div class="kpi-k">启动时间</div><div class="kpi-v">42<small>s</small></div></div>
+        <div class="kpi g"><div class="kpi-k">最低启动温度</div><div class="kpi-v">-35<small>℃</small></div></div>
+        <div class="kpi o"><div class="kpi-k">启动能耗</div><div class="kpi-v">1.8<small>kWh</small></div></div>
+        <div class="kpi b"><div class="kpi-k">国标判定</div><div class="kpi-v" style="font-size:15px;color:var(--green)">通过 ✓</div></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="cv1"></canvas>
+        ${legend([{c:'#22d3ee',n:'堆温 (℃)'},{c:'#00d48a',n:'单片电压 (V)'}])}
+      </div>`;
+    res.innerHTML = html;
+    requestAnimationFrame(()=>{
+      const g = $('#cv1');
+      // 双 Y 归一化处理：把电压放大到温度量程
+      const scaled = pts2.map(d=>[d[0], d[1]*120]);
+      plot(g, {
+        xMin:0, xMax:120, yMin:-40, yMax:90, xLabel:'时间 (s)', yLabel:'温度 (℃) / 电压×120',
+        series:[
+          {data:pts, color:'#22d3ee', fill:'rgba(34,211,238,.16)'},
+          {data:scaled, color:'#00d48a', dots:false}
+        ]
+      });
+    });
+  }
+  else if(S.simMode === 'durab'){
+    const pts = [];
+    for(let h=0; h<=5000; h+=50){
+      const soh = 100 - 6.8*Math.sqrt(h/1000) - 0.0022*h;
+      pts.push([h, Math.max(soh, 60)]);
+    }
+    html = `
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="kpi g"><div class="kpi-k">当前SOH (5000h)</div><div class="kpi-v">${fmt(pts[pts.length-1][1],1)}<small>%</small></div></div>
+        <div class="kpi o"><div class="kpi-k">衰减速率</div><div class="kpi-v">2.6<small>μV/h·cell</small></div></div>
+        <div class="kpi b"><div class="kpi-k">剩余寿命 RUL</div><div class="kpi-v">3200<small>h</small></div></div>
+        <div class="kpi p"><div class="kpi-k">启停衰减</div><div class="kpi-v">12<small>μV/次</small></div></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="cv1"></canvas>
+        ${legend([{c:'#00d48a',n:'SOH 健康度 (%)'}])}
+      </div>`;
+    res.innerHTML = html;
+    requestAnimationFrame(()=>plot($('#cv1'), {
+      xMin:0, xMax:5000, yMin:60, yMax:100, xLabel:'累计运行时间 (h)', yLabel:'SOH (%)',
+      series:[{data:pts, color:'#00d48a', fill:'rgba(0,212,138,.16)'}]
+    }));
+  }
+  else if(S.simMode === 'bench'){
+    const sim = [], mea = [];
+    for(let i=0.1;i<=2.0;i+=0.1){
+      const v = vcell(i, T, r.tier);
+      sim.push([i, v]);
+      mea.push([i, v * (0.985 + (Math.random()-0.5)*0.018)]);
+    }
+    html = `
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="kpi b"><div class="kpi-k">RMSE 均方根误差</div><div class="kpi-v">8.4<small>mV</small></div></div>
+        <div class="kpi g"><div class="kpi-k">最大偏差</div><div class="kpi-v">16.2<small>mV</small></div></div>
+        <div class="kpi o"><div class="kpi-k">修正系数 k</div><div class="kpi-v">0.987</div></div>
+        <div class="kpi c"><div class="kpi-k">拟合优度 R²</div><div class="kpi-v">0.9963</div></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="cv1"></canvas>
+        ${legend([{c:'#0a84ff',n:'仿真值'},{c:'#ff9f0a',n:'实测值'}])}
+      </div>`;
+    res.innerHTML = html;
+    requestAnimationFrame(()=>plot($('#cv1'), {
+      xMin:0, xMax:2.0, yMin:0.4, yMax:1.0, xLabel:'电流密度 (A/cm²)', yLabel:'单片电压 (V)',
+      series:[
+        {data:sim, color:'#0a84ff'},
+        {data:mea, color:'#ff9f0a', dots:true}
+      ]
+    }));
+  }
+  else { // limit
+    const series = [40, 60, 80, 95].map((tempC,idx)=>{
+      const T2 = tempC + 273.15;
+      const d = [];
+      for(let i=0.05;i<=2.4;i+=0.06){
+        const v = vcell(i, T2, r.tier);
+        if(v < 0.12) break;
+        d.push([i, v]);
+      }
+      return {data:d, color:['#22d3ee','#00d48a','#0a84ff','#ff9f0a'][idx]};
+    });
+    html = `
+      <div class="grid g2" style="margin-bottom:12px">
+        <div class="kpi o"><div class="kpi-k">极限电流密度</div><div class="kpi-v">2.31<small>A/cm²</small></div></div>
+        <div class="kpi g"><div class="kpi-k">安全边界裕度</div><div class="kpi-v">18.4<small>%</small></div></div>
+        <div class="kpi c"><div class="kpi-k">最低单片电压</div><div class="kpi-v">0.55<small>V</small></div></div>
+        <div class="kpi p"><div class="kpi-k">干湿膜判定</div><div class="kpi-v" style="font-size:15px;color:var(--green)">正常 ✓</div></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="cv1"></canvas>
+        ${legend([{c:'#22d3ee',n:'40℃'},{c:'#00d48a',n:'60℃'},{c:'#0a84ff',n:'80℃'},{c:'#ff9f0a',n:'95℃'}])}
+      </div>`;
+    res.innerHTML = html;
+    requestAnimationFrame(()=>plot($('#cv1'), {
+      xMin:0, xMax:2.4, yMin:0, yMax:1.0, xLabel:'电流密度 (A/cm²)', yLabel:'单片电压 (V)',
+      series
+    }));
+  }
+  toast('仿真完成 · ' + SIM_MODES.find(m=>m.id===S.simMode).t);
+}
+
+/* ---------- 视图3：计算器 ---------- */
+const CALCS = [
+  {id:'elec', n:'电气计算'},
+  {id:'h2',   n:'氢气消耗'},
+  {id:'air',  n:'空气配比'},
+  {id:'eta',  n:'系统效率'},
+  {id:'heat', n:'热管理'},
+  {id:'purge',n:'阳极吹扫'},
+  {id:'cal',  n:'台架标定'},
+  {id:'unit', n:'单位换算'},
+];
+function viewCalc(){
+  return `
+  <div class="tabs">
+    ${CALCS.map(c=>`<div class="tab ${c.id===S.calcTab?'active':''}" data-calc="${c.id}">${c.n}</div>`).join('')}
+  </div>
+  <div id="calcPanel">${calcPanel()}</div>`;
+}
+function calcPanel(){
+  const t = S.calcTab;
+  const F = (label,id,val,step='any') => `
+    <div class="field"><label>${label}</label>
+      <input type="number" id="${id}" value="${val}" step="${step}">
+    </div>`;
+
+  const forms = {
+    elec: F('目标功率 (kW)','c_p', S.power) + F('电堆片数 N','c_n', 350) + F('有效面积 (cm²)','c_a', 500) +
+      `<button class="btn primary block" data-run="elec">计算</button>`,
+    h2: F('净输出功率 (kW)','c_p', S.power) + F('系统效率 (%)','c_e', 50) +
+      `<button class="btn primary block" data-run="h2">计算</button>`,
+    air: F('氢气质量流量 (kg/h)','c_m', 3.5) + F('空气过量比 λ','c_l', 2.0) +
+      `<button class="btn primary block" data-run="air">计算</button>`,
+    eta: F('电堆功率 (kW)','c_ps', S.power) + F('BOP功耗 (kW)','c_bop', S.power*0.16) + F('单片电压 (V)','c_v', 0.68) +
+      `<button class="btn primary block" data-run="eta">计算</button>`,
+    heat: F('电堆功率 (kW)','c_p', S.power) + F('电堆效率 (%)','c_e', 48) + F('冷却液温差 ΔT (K)','c_dt', 6) +
+      `<button class="btn primary block" data-run="heat">计算</button>`,
+    purge: F('目标功率 (kW)','c_p', S.power) +
+      `<button class="btn primary block" data-run="purge">计算</button>`,
+    cal: F('设定值','c_set', 100) + F('实测值','c_mea', 98.6) + F('传感器量程','c_range', 200) +
+      `<button class="btn primary block" data-run="cal">计算</button>`,
+    unit: `
+      <div class="field"><label>数值</label><input type="number" id="u_v" value="1"></div>
+      <div class="field"><label>源单位</label><select id="u_from">
+        <option value="kg">kg (氢气质量)</option>
+        <option value="Nm3">Nm³ (标方)</option>
+        <option value="kWh">kWh (能量)</option>
+        <option value="MJ">MJ</option>
+        <option value="L">L (液氢)</option>
+      </select></div>
+      <button class="btn primary block" data-run="unit">换算</button>`,
+  };
+  return `<div class="card"><div class="card-h"><h3>${CALCS.find(c=>c.id===t).n}</h3><span class="tag">全功率修正</span></div>
+    ${forms[t]}<div id="calcRes"></div></div>`;
+}
+function bindCalc(){
+  $$('[data-calc]').forEach(el=>{
+    el.onclick = ()=>{ S.calcTab = el.dataset.calc; renderView(); };
+  });
+  $$('[data-run]').forEach(el=>{
+    el.onclick = ()=> runCalc(el.dataset.run);
+  });
+}
+function runCalc(type){
+  const g = id => parseFloat(($('#'+id)||{}).value) || 0;
+  const out = $('#calcRes');
+  let html = '';
+  const row = (k,v,u) => `<div class="res-row"><span class="res-k">${k}</span><span class="res-v">${v}<small>${u||''}</small></span></div>`;
+
+  if(type === 'elec'){
+    const P = g('c_p'), N = g('c_n'), A = g('c_a');
+    const i = solveI(P, {N, A, R:0.12, Aact:0.0095, i0:0.001, m:3e-5, n:4});
+    const V = vcell(i, 353.15, {Aact:0.0095, i0:0.001, R:0.12, m:3e-5, n:4});
+    html = `<div class="res-box">
+      ${row('电流密度 i', fmt(i,3), 'A/cm²')}
+      ${row('单片电压 V', fmt(V,4), 'V')}
+      ${row('电堆电流 I', fmt(i*A,1), 'A')}
+      ${row('电堆电压 V_stack', fmt(V*N,1), 'V')}
+      ${row('等效内阻 R', fmt(0.12, 3), 'Ω·cm²')}
+      ${row('欧姆压降', fmt(0.12*i, 4), 'V/cell')}
+      ${row('功率校验', fmt(N*V*i*A/1000,2), 'kW')}
+    </div>`;
+  }
+  else if(type === 'h2'){
+    const P = g('c_p'), e = g('c_e')/100;
+    const m = P / (e * LHV_H2);
+    html = `<div class="res-box">
+      ${row('氢气质量流量', fmt(m,3), 'kg/h')}
+      ${row('氢气体积流量 (标况)', fmt(m/0.0899,2), 'Nm³/h')}
+      ${row('单位能耗', fmt(m*1000/P,2), 'g/kWh')}
+      ${row('百公里氢耗 (按 130kWh/100km)', fmt(m*1000*130/1000/P*100/100,2), 'kg/100km')}
+      ${row('小时耗氢量', fmt(m,3), 'kg/h')}
+      ${row('日耗氢量 (20h)', fmt(m*20,1), 'kg')}
+    </div>`;
+  }
+  else if(type === 'air'){
+    const m = g('c_m'), l = g('c_l');
+    const air = m * 34.3 * l;
+    const o2 = air * 0.233;
+    const pcmp = air/3600 * 1.005 * 293 * (Math.pow(2.5, 0.2857)-1) / 0.72;
+    html = `<div class="res-box">
+      ${row('理论空气量', fmt(m*34.3,2), 'kg/h')}
+      ${row('实际空气流量', fmt(air,2), 'kg/h')}
+      ${row('氧气流量', fmt(o2,2), 'kg/h')}
+      ${row('氧过量比', fmt(l*2.0,2), '—')}
+      ${row('空压机功耗', fmt(pcmp,2), 'kW')}
+      ${row('喘振裕度', '18.5', '%')}
+    </div>`;
+  }
+  else if(type === 'eta'){
+    const ps = g('c_ps'), bop = g('c_bop'), v = g('c_v');
+    const net = ps - bop;
+    html = `<div class="res-box">
+      ${row('电堆效率', fmt(v/1.482*100,2), '%')}
+      ${row('不含 BOP 效率', fmt(v/1.482*100,2), '%')}
+      ${row('BOP 功耗', fmt(bop,2), 'kW')}
+      ${row('净输出功率', fmt(net,2), 'kW')}
+      ${row('整机综合效率', fmt(v/1.482*net/ps*100,2), '%')}
+      ${row('辅机占比', fmt(bop/ps*100,2), '%')}
+    </div>`;
+  }
+  else if(type === 'heat'){
+    const P = g('c_p'), e = g('c_e')/100, dT = g('c_dt');
+    const Q = P*(1/e - 1);
+    const flow = Q/(3.55*4.18*dT)*60;
+    html = `<div class="res-box">
+      ${row('产热功率 Q', fmt(Q,2), 'kW')}
+      ${row('冷却液流量', fmt(flow,2), 'L/min')}
+      ${row('温差校核', dT, 'K')}
+      ${row('散热器需求', fmt(Q*1.15,2), 'kW')}
+      ${row('进出口温度', '80 / 74', '℃')}
+      ${row('热流密度', fmt(Q*1000/(500*350),3), 'W/cm²')}
+    </div>`;
+  }
+  else if(type === 'purge'){
+    const P = g('c_p'), t = tierOf(P);
+    const period = P<=30 ? 45 : P<=80 ? 30 : P<=200 ? 18 : 10;
+    const dur = P<=30 ? 0.45 : P<=80 ? 0.75 : P<=200 ? 1.15 : 1.8;
+    const loss = P/400*0.6 + 0.15;
+    html = `<div class="res-box">
+      ${row('功率档位', t.name+'型', '')}
+      ${row('推荐吹扫周期', fmt(period,0), 's')}
+      ${row('推荐吹扫时长', fmt(dur,2), 's')}
+      ${row('单次氢损', fmt(loss,3), 'g')}
+      ${row('日氢损 (20h)', fmt(loss*(3600/period)*20/1000,2), 'kg')}
+      ${row('触发方式', P>200?'MPC 模型预测':'定时 + 电压降', '')}
+    </div>`;
+  }
+  else if(type === 'cal'){
+    const set = g('c_set'), mea = g('c_mea'), range = g('c_range');
+    const dev = mea - set;
+    const rel = dev/set*100;
+    const k = set/mea;
+    const err = dev/range*100;
+    html = `<div class="res-box">
+      ${row('绝对偏差', fmt(dev,3), '')}
+      ${row('相对偏差', fmt(rel,3), '%')}
+      ${row('修正系数 k', fmt(k,5), '')}
+      ${row('传感器满量程误差', fmt(err,3), '%FS')}
+      ${row('修正后实测值', fmt(mea*k,3), '')}
+      ${row('判定', Math.abs(rel)<1?'合格 ✓':'超差 ✗', '')}
+    </div>`;
+  }
+  else if(type === 'unit'){
+    const v = g('u_v');
+    const from = $('#u_from').value;
+    // 基准：kWh
+    const toKWh = {kg: LHV_H2, Nm3: LHV_H2*0.0899, kWh: 1, MJ: 1/3.6, L: LHV_H2*0.0708};
+    const kwh = v * toKWh[from];
+    const kg = kwh / LHV_H2;
+    html = `<div class="res-box">
+      ${row('能量', fmt(kwh,4), 'kWh')}
+      ${row('能量', fmt(kwh*3.6,4), 'MJ')}
+      ${row('质量', fmt(kg,5), 'kg')}
+      ${row('标方体积', fmt(kg/0.0899,4), 'Nm³')}
+      ${row('液氢体积', fmt(kg/0.0708,4), 'L')}
+      ${row('汽油当量', fmt(kwh/12.0,4), 'kg')}
+      ${row('热量', fmt(kwh*860,2), 'kcal')}
+    </div>`;
+  }
+  out.innerHTML = html;
+}
+/* 绑定计算器事件（在 renderView 后调用） */
+const _origRenderView = renderView;
+renderView = function(){ _origRenderView(); if(S.view==='calc') bindCalc(); };
+
+/* ---------- 视图4：参数库 ---------- */
+const LIB = [
+  {t:'电堆本体参数', ico:'▤', items:[
+    ['片数范围','60 – 500 片'],['有效面积','100 – 700 cm²'],
+    ['膜电极','Nafion 211 / 212 / XL'],['Pt 载量','0.25 – 0.40 mg/cm²'],
+    ['开路电压 OCV','0.95 – 1.05 V'],['极限电流密度','2.0 – 2.5 A/cm²'],
+    ['功率密度','0.6 – 1.1 W/cm²'],['体积功率密度','3.0 – 5.5 kW/L'],
+    ['比功率','1.8 – 3.2 kW/kg'],['设计寿命','8000 – 20000 h']
+  ]},
+  {t:'气路系统', ico:'⬡', items:[
+    ['氢气纯度','5.0 / 4.5 / 3.0'],['氢气压力','0.12 – 0.30 MPa'],
+    ['氢气温度','-40 – 85 ℃'],['氢循环泵','离心 / 爪式 / 引射'],
+    ['空压机类型','离心 / 螺杆 / 罗茨'],['空压机压比','1.8 – 2.6'],
+    ['喘振裕度','≥ 15%'],['增湿器','膜增湿 / 焓轮 / 自增湿'],
+    ['空气过量比 λ','1.8 – 2.8']
+  ]},
+  {t:'水热管理', ico:'◈', items:[
+    ['进出堆温差','5 – 8 K'],['堆温上限','65 / 75 / 80 / 85 ℃'],
+    ['冷却液','50% 乙二醇水溶液'],['水淹判定','压降↑ + 电压骤降'],
+    ['膜干判定','高频阻抗↑ + 电压波动'],['产热模型','Q = P(1/η − 1)'],
+    ['散热器裕度','≥ 15%'],['循环流量','10 – 400 L/min']
+  ]},
+  {t:'BOP 辅机参数', ico:'⚙', items:[
+    ['空压机功耗占比','12 – 22%'],['水泵功耗占比','2 – 5%'],
+    ['氢循环泵占比','1 – 4%'],['DC-DC 效率','96 – 98.5%'],
+    ['电磁阀响应','< 20 ms'],['辅机总占比','15 – 28%'],
+    ['待机功耗','< 50 W'],['冷启动加热功率','3 – 12 kW']
+  ]},
+  {t:'台架专属参数', ico:'⌗', items:[
+    ['功率范围','10 – 400 kW'],['采样频率','10 – 1000 Hz'],
+    ['电压采样精度','±0.05% FS'],['电流采样精度','±0.1% FS'],
+    ['稳态判定','电压波动 < ±5 mV / 30 s'],['负载匹配','电子负载 / 电机对拖'],
+    ['标定点数','≥ 20 点'],['数据导出','CSV / TDMS / MAT']
+  ]},
+  {t:'国标与阈值', ico:'§', items:[
+    ['GB/T 24554','燃料电池发动机性能试验方法'],
+    ['GB/T 33979','低温冷启动试验方法（−35℃）'],
+    ['GB/T 26990','车载氢系统技术条件'],
+    ['GB/T 37244','质子交换膜燃料电池汽车用燃料氢气'],
+    ['低温启动阈值','−30℃ / −35℃ 通过'],
+    ['耐久阈值','5000 h 衰减 < 10%'],
+    ['效率阈值','系统效率 ≥ 45%'],
+    ['加氢压力','35 MPa / 70 MPa']
+  ]},
+];
+function viewLib(){
+  return `
+  <div class="sec-title">通用参数库 · 无品牌限制</div>
+  ${LIB.map((c,idx)=>`
+    <div class="card" style="cursor:pointer" data-lib="${idx}">
+      <div class="card-h" style="margin-bottom:${S.libCat===idx?'12px':'0'}">
+        <div class="li-ico" style="width:32px;height:32px;font-size:14px">${c.ico}</div>
+        <h3>${c.t}</h3>
+        <span class="badge info">${c.items.length} 项</span>
+        <span style="color:var(--mut);font-size:12px;transition:.2s;transform:rotate(${S.libCat===idx?'90deg':'0deg'})">›</span>
+      </div>
+      ${S.libCat===idx ? `
+        <div style="border-top:1px solid var(--line);padding-top:10px">
+          ${c.items.map(it=>`
+            <div class="res-row" style="border-bottom-color:var(--line)">
+              <span class="res-k">${it[0]}</span>
+              <span class="res-v" style="color:#cfe6ff;font-size:12.5px;font-weight:600">${it[1]}</span>
+            </div>`).join('')}
+        </div>` : ''}
+    </div>`).join('')}
+  <div class="grid g2" style="margin-top:6px">
+    <button class="btn ghost" onclick="toast('参数库已导出为 JSON')">⇩ 导出参数库</button>
+    <button class="btn ghost" onclick="toast('已生成电堆模型，可进入仿真')">→ 生成模型</button>
+  </div>
+  <div class="foot-note">参数库内容为通用工程参考值<br>实际设计请以厂商规格书与国标为准</div>`;
+}
+function bindLib(){
+  $$('[data-lib]').forEach(el=>{
+    el.onclick = ()=>{ S.libCat = (S.libCat === +el.dataset.lib) ? -1 : +el.dataset.lib; renderView(); };
+  });
+}
+const _rv2 = renderView;
+renderView = function(){ _rv2(); if(S.view==='lib') bindLib(); };
+
+/* ---------- 视图5：监控 ---------- */
+let monitorTimer = null;
+function viewMonitor(){
+  return `
+  <div class="grid g2" style="margin-bottom:12px">
+    <div class="kpi b"><div class="kpi-k">总功率</div><div class="kpi-v" id="m_ptotal">—<small>kW</small></div></div>
+    <div class="kpi g"><div class="kpi-k">净功率</div><div class="kpi-v" id="m_pnet">—<small>kW</small></div></div>
+    <div class="kpi c"><div class="kpi-k">电堆电压</div><div class="kpi-v" id="m_v">—<small>V</small></div></div>
+    <div class="kpi o"><div class="kpi-k">电堆电流</div><div class="kpi-v" id="m_i">—<small>A</small></div></div>
+    <div class="kpi p"><div class="kpi-k">实时氢耗</div><div class="kpi-v" id="m_h2">—<small>kg/h</small></div></div>
+    <div class="kpi g"><div class="kpi-k">系统效率</div><div class="kpi-v" id="m_eta">—<small>%</small></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>单片一致性</h3><span class="tag" id="m_cons">—</span></div>
+    <div class="mbar"><i id="m_cons_bar" style="width:92%;background:var(--green)"></i></div>
+    <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-top:8px">
+      <span>最大偏差 <b id="m_dev" style="color:var(--txt)">—</b></span>
+      <span>标准差 <b id="m_std" style="color:var(--txt)">—</b></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>温度 / 压力</h3></div>
+    <div class="grid g2">
+      <div class="kpi o"><div class="kpi-k">堆温</div><div class="kpi-v" id="m_t">—<small>℃</small></div></div>
+      <div class="kpi c"><div class="kpi-k">氢压</div><div class="kpi-v" id="m_p">—<small>MPa</small></div></div>
+      <div class="kpi b"><div class="kpi-k">进堆水温</div><div class="kpi-v" id="m_tw">—<small>℃</small></div></div>
+      <div class="kpi p"><div class="kpi-k">空压机转速</div><div class="kpi-v" id="m_rpm">—<small>rpm</small></div></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="mChart"></canvas>
+    ${legend([{c:'#0a84ff',n:'功率 (kW)'}])}
+  </div>
+
+  <div class="sec-title">辅机状态</div>
+  <div class="card">
+    ${[
+      ['空压机','#0a84ff','m_aux1'],['水泵','#00d48a','m_aux2'],
+      ['氢循环泵','#22d3ee','m_aux3'],['DC-DC','#a78bfa','m_aux4'],
+    ].map(a=>`
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12px">
+          <span style="color:#a9bcd6;font-weight:550">${a[0]}</span>
+          <span id="${a[2]}" style="color:${a[1]};font-weight:700;font-variant-numeric:tabular-nums">—</span>
+        </div>
+        <div class="mbar"><i id="${a[2]}_b" style="width:0%;background:${a[1]}"></i></div>
+      </div>`).join('')}
+  </div>
+
+  <div class="sec-title">故障告警</div>
+  <div class="card">
+    ${[
+      {l:'超温',s:'ok',d:'堆温正常'},
+      {l:'超压 / 欠压',s:'ok',d:'压力正常'},
+      {l:'低单片电压',s:'ok',d:'一致性良好'},
+      {l:'膜干 / 水淹',s:'ok',d:'高频阻抗正常'},
+      {l:'氢浓度',s:'ok',d:'0.02% LEL'},
+      {l:'空压机喘振',s:'ok',d:'裕度 18.5%'},
+    ].map(a=>`
+      <div class="res-row">
+        <span class="res-k">${a.l}</span>
+        <span class="badge ${a.s==='ok'?'ok':a.s==='warn'?'warn':'err'}">${a.s==='ok'?'正常':a.s==='warn'?'警告':'严重'}</span>
+      </div>`).join('')}
+  </div>
+
+  <div class="sec-title">健康度 SOH</div>
+  <div class="card">
+    <div class="grid g2">
+      <div class="kpi g"><div class="kpi-k">当前 SOH</div><div class="kpi-v">96.4<small>%</small></div></div>
+      <div class="kpi b"><div class="kpi-k">剩余寿命 RUL</div><div class="kpi-v">6840<small>h</small></div></div>
+      <div class="kpi o"><div class="kpi-k">累计运行</div><div class="kpi-v">3160<small>h</small></div></div>
+      <div class="kpi p"><div class="kpi-k">启停次数</div><div class="kpi-v">428<small>次</small></div></div>
+    </div>
+    <div class="mbar" style="margin-top:14px"><i style="width:96.4%;background:linear-gradient(90deg,var(--green),var(--cyan))"></i></div>
+    <div style="font-size:10.5px;color:var(--mut);margin-top:7px">距下次维保还需 <b style="color:var(--orange)">340 h</b></div>
+  </div>
+  <div class="grid g2">
+    <button class="btn ghost" onclick="toast('数据回放：最近 24h（1×–100× 可调）')">↻ 数据回放</button>
+    <button class="btn ghost" onclick="toast('故障报告已生成并附溯源快照')">⎙ 故障报告</button>
+  </div>`;
+}
+function startMonitor(){
+  stopMonitor();
+  S.monitorData.hist = [];
+  monitorTimer = setInterval(tickMonitor, 900);
+  tickMonitor();
+}
+function stopMonitor(){ if(monitorTimer){ clearInterval(monitorTimer); monitorTimer = null; } }
+function tickMonitor(){
+  const r = solveSystem(S.power);
+  const n = () => (Math.random()-0.5);
+  const Ptotal = S.power * (1 + n()*0.012);
+  const Pnet = Ptotal - r.pBop*(1+n()*0.05);
+  const V = r.Vstack * (1 + n()*0.004);
+  const I = Ptotal*1000/V;
+  const mH2 = r.mH2 * (1 + n()*0.02);
+  const eta = r.etaSys*100 * (1 + n()*0.01);
+
+  const set = (id, v, d=1) => { const el = $('#'+id); if(el) el.innerHTML = fmt(v,d)+el.querySelector('small')?.outerHTML || ''; };
+  const upd = (id, v, u, d=1) => { const el = $('#'+id); if(el) el.innerHTML = fmt(v,d)+`<small>${u}</small>`; };
+
+  upd('m_ptotal', Ptotal, 'kW', 1);
+  upd('m_pnet', Pnet, 'kW', 1);
+  upd('m_v', V, 'V', 1);
+  upd('m_i', I, 'A', 0);
+  upd('m_h2', mH2, 'kg/h', 2);
+  upd('m_eta', eta, '%', 1);
+
+  const dev = 8 + Math.random()*10;
+  const std = 3 + Math.random()*5;
+  const cons = 100 - dev;
+  $('#m_dev').textContent = dev.toFixed(1)+' mV';
+  $('#m_std').textContent = std.toFixed(1)+' mV';
+  $('#m_cons').textContent = cons.toFixed(1)+'%';
+  const cb = $('#m_cons_bar');
+  if(cb){ cb.style.width = cons+'%'; cb.style.background = cons>92?'var(--green)':cons>85?'var(--orange)':'var(--red)'; }
+
+  upd('m_t', 78+Math.random()*4, '℃', 1);
+  upd('m_p', 0.18+Math.random()*0.04, 'MPa', 3);
+  upd('m_tw', 72+Math.random()*3, '℃', 1);
+  upd('m_rpm', 48000+Math.random()*6000, 'rpm', 0);
+
+  const aux = [
+    ['m_aux1', 78+Math.random()*10, '%'],
+    ['m_aux2', 62+Math.random()*10, '%'],
+    ['m_aux3', 45+Math.random()*15, '%'],
+    ['m_aux4', 88+Math.random()*8, '%'],
+  ];
+  aux.forEach(a=>{
+    const el = $('#'+a[0]); if(el) el.textContent = a[1].toFixed(0)+a[2];
+    const b = $('#'+a[0]+'_b'); if(b) b.style.width = a[1]+'%';
+  });
+
+  // 历史曲线
+  S.monitorData.t++;
+  S.monitorData.hist.push([S.monitorData.t, Ptotal]);
+  if(S.monitorData.hist.length > 60) S.monitorData.hist.shift();
+
+  const cv = $('#mChart');
+  if(cv && S.view === 'monitor'){
+    const hist = S.monitorData.hist;
+    const xMin = hist[0][0], xMax = hist[hist.length-1][0];
+    if(xMax > xMin){
+      plot(cv, {
+        xMin, xMax, yMin:0, yMax:S.power*1.25,
+        xLabel:'采样点', yLabel:'功率 (kW)',
+        series:[{data:hist, color:'#0a84ff', fill:'rgba(10,132,255,.2)'}]
+      });
+    }
+  }
+}
+function afterMonitorRender(){ tickMonitor(); }
+
+/* ---------- 视图6：加氢 ---------- */
+const STATIONS = [
+  {n:'中石化 · 北京大兴加氢站', d:'1.2 km · 35/70 MPa', p:'32.5 元/kg', s:'ok',  q:'空闲'},
+  {n:'亿华通 · 张家口示范站',   d:'3.8 km · 35 MPa',    p:'30.8 元/kg', s:'warn',q:'排队 3 车'},
+  {n:'国家电投 · 上海临港站',   d:'5.4 km · 70 MPa',    p:'35.0 元/kg', s:'ok',  q:'空闲'},
+  {n:'广州黄埔氢能站',         d:'8.1 km · 35/70 MPa', p:'33.2 元/kg', s:'err', q:'维护中'},
+  {n:'成都郫都加氢站',         d:'12.6 km · 35 MPa',   p:'31.5 元/kg', s:'ok',  q:'空闲'},
+];
+function viewH2(){
+  const st = {ok:'ok', warn:'warn', err:'err'};
+  return `
+  <div class="card" style="background:linear-gradient(150deg,rgba(0,212,138,.1),rgba(0,212,138,.02));border-color:rgba(0,212,138,.25)">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="flex:1">
+        <div style="font-size:11px;color:#7fa8d4;margin-bottom:5px">车载氢瓶 · 京A·H2 0001</div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-1px;color:var(--green)">18.6<span style="font-size:14px;color:#6b87ab;font-weight:500;margin-left:5px">kg / 31.2 kg</span></div>
+        <div class="mbar" style="margin-top:10px;height:7px"><i style="width:59.6%;background:linear-gradient(90deg,var(--green),var(--cyan))"></i></div>
+        <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-top:7px">
+          <span>瓶压 42.6 MPa</span><span>瓶温 24 ℃</span><span>续航 ≈ 386 km</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:14px">
+    <button class="btn primary" onclick="toast('扫码加氢已启动，请对准加氢机二维码')">⬢ 扫码加氢</button>
+    <button class="btn ghost" onclick="toast('已切换至 70 MPa 加注模式')">⚙ 加注模式</button>
+    <button class="btn ghost" onclick="toast('电子发票已申请，将发送至邮箱')">⎙ 发票</button>
+  </div>
+
+  <div class="sec-title">附近加氢站</div>
+  ${STATIONS.map(s=>`
+    <div class="li">
+      <div class="li-ico ${s.s==='ok'?'g':s.s==='warn'?'o':''}">⛽</div>
+      <div class="li-body">
+        <div class="li-t">${s.n}</div>
+        <div class="li-d">${s.d}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="li-r" style="color:var(--green);font-size:12.5px">${s.p}</div>
+        <div class="badge ${s.s}" style="margin-top:4px">${s.q}</div>
+      </div>
+    </div>`).join('')}
+
+  <div class="sec-title">车队能耗统计</div>
+  <div class="grid g2">
+    <div class="kpi b"><div class="kpi-k">在营车辆</div><div class="kpi-v">24<small>台</small></div></div>
+    <div class="kpi g"><div class="kpi-k">平均百公里氢耗</div><div class="kpi-v">7.8<small>kg/100km</small></div></div>
+    <div class="kpi c"><div class="kpi-k">本月总氢耗</div><div class="kpi-v">3,264<small>kg</small></div></div>
+    <div class="kpi o"><div class="kpi-k">本月氢费</div><div class="kpi-v">10.6<small>万元</small></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-h"><h3>车辆能耗排行</h3><span class="tag">近 7 日</span></div>
+    ${[
+      {n:'京A·H2 0001', v:7.2, s:'ok'},
+      {n:'京A·H2 0007', v:7.9, s:'ok'},
+      {n:'京A·H2 0012', v:8.4, s:'warn'},
+      {n:'京A·H2 0019', v:9.6, s:'err'},
+    ].map(v=>`
+      <div class="res-row">
+        <span class="res-k">${v.n}</span>
+        <span class="res-v" style="color:${v.s==='ok'?'var(--green)':v.s==='warn'?'var(--orange)':'var(--red)'}">${v.v}<small>kg/100km</small></span>
+      </div>`).join('')}
+  </div>
+
+  <div class="sec-title">加注记录</div>
+  ${[
+    {d:'2026-09-28 14:22', s:'大兴加氢站', a:'18.6 kg', m:'¥604.50'},
+    {d:'2026-09-25 09:10', s:'张家口示范站', a:'22.4 kg', m:'¥689.92'},
+    {d:'2026-09-22 16:47', s:'临港站', a:'19.8 kg', m:'¥693.00'},
+  ].map(r=>`
+    <div class="li">
+      <div class="li-ico g">⇩</div>
+      <div class="li-body">
+        <div class="li-t">${r.s}</div>
+        <div class="li-d">${r.d}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="li-r" style="font-size:12.5px">${r.a}</div>
+        <div style="font-size:10.5px;color:var(--mut);margin-top:2px">${r.m}</div>
+      </div>
+    </div>`).join('')}`;
+}
+
+/* ---------- 视图7：数据管理 ---------- */
+function viewData(){
+  return `
+  <div class="sec-title">已保存方案</div>
+  ${S.projects.map((p,i)=>`
+    <div class="li">
+      <div class="li-ico ${i%2?'g':'b'}">◫</div>
+      <div class="li-body">
+        <div class="li-t">${p.name}</div>
+        <div class="li-d">${p.tier}型 · ${p.power} kW · ${p.date}</div>
+      </div>
+      <div class="badge info">${p.power}kW</div>
+    </div>`).join('')}
+
+  <div class="sec-title">方案横向对比</div>
+  <div class="card">
+    <div class="grid g2" style="margin-bottom:12px">
+      <div class="field" style="margin:0"><label>方案 A</label>
+        <select id="cmpA">${S.projects.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')}</select>
+      </div>
+      <div class="field" style="margin:0"><label>方案 B</label>
+        <select id="cmpB">${S.projects.map((p,i)=>`<option value="${i}" ${i===1?'selected':''}>${p.name}</option>`).join('')}</select>
+      </div>
+    </div>
+    <button class="btn primary block" id="btnCmp">⇄ 开始对比</button>
+    <div id="cmpRes"></div>
+  </div>
+
+  <div class="sec-title">数据溯源</div>
+  <div class="card">
+    <div class="res-row"><span class="res-k">数据总条数</span><span class="res-v">12,847</span></div>
+    <div class="res-row"><span class="res-k">仿真数据</span><span class="res-v">4,210</span></div>
+    <div class="res-row"><span class="res-k">实测数据</span><span class="res-v">7,936</span></div>
+    <div class="res-row"><span class="res-k">计算记录</span><span class="res-v">701</span></div>
+    <div class="res-row"><span class="res-k">最近同步</span><span class="res-v" style="font-size:12px">2026-09-30 08:14</span></div>
+  </div>
+
+  <div class="grid g2">
+    <button class="btn ghost" onclick="toast('已批量导出为 Excel 压缩包')">⇩ 批量导出</button>
+    <button class="btn ghost" onclick="toast('技术对标报告已生成（含版权页）')">⎙ 对标报告</button>
+  </div>
+  <div class="foot-note">所有数据均可溯源、可检索、可批量导出<br>导出文件自动嵌入版权追溯码</div>`;
+}
+function bindData(){
+  const b = $('#btnCmp');
+  if(!b) return;
+  b.onclick = ()=>{
+    const A = S.projects[+$('#cmpA').value], B = S.projects[+$('#cmpB').value];
+    const ra = solveSystem(A.power), rb = solveSystem(B.power);
+    const rows = [
+      ['功率', A.power+' kW', B.power+' kW'],
+      ['电堆效率', fmt(ra.etaStack*100,1)+'%', fmt(rb.etaStack*100,1)+'%'],
+      ['系统效率', fmt(ra.etaSys*100,1)+'%', fmt(rb.etaSys*100,1)+'%'],
+      ['氢耗', fmt(ra.mH2,2)+' kg/h', fmt(rb.mH2,2)+' kg/h'],
+      ['单位能耗', fmt(ra.gkwh,1)+' g/kWh', fmt(rb.gkwh,1)+' g/kWh'],
+      ['电流密度', fmt(ra.i,2), fmt(rb.i,2)],
+      ['产热', fmt(ra.Q,1)+' kW', fmt(rb.Q,1)+' kW'],
+      ['BOP功耗', fmt(ra.pBop,1)+' kW', fmt(rb.pBop,1)+' kW'],
+    ];
+    $('#cmpRes').innerHTML = `
+      <div class="res-box" style="margin-top:12px">
+        <div class="res-row" style="border-bottom:1px solid rgba(0,212,138,.3)">
+          <span class="res-k" style="font-weight:700">指标</span>
+          <span class="res-v" style="font-size:11px">A</span>
+          <span class="res-v" style="font-size:11px">B</span>
+        </div>
+        ${rows.map(r=>`
+          <div class="res-row">
+            <span class="res-k">${r[0]}</span>
+            <span class="res-v" style="font-size:11.5px;min-width:74px;text-align:right">${r[1]}</span>
+            <span class="res-v" style="font-size:11.5px;min-width:74px;text-align:right;color:#22d3ee">${r[2]}</span>
+          </div>`).join('')}
+      </div>`;
+    toast('对比完成 · 效率差 '+fmt(Math.abs(ra.etaSys-rb.etaSys)*100,1)+'%');
+  };
+}
+const _rv3 = renderView;
+renderView = function(){ _rv3(); if(S.view==='data') bindData(); };
+
+/* ---------- 视图8：知识库 ---------- */
+const KB = [
+  {c:'国标规范', ico:'§', items:[
+    ['GB/T 24554 燃料电池发动机性能试验方法','规定了 10–400kW 车用燃料电池发动机的功率、效率、氢耗试验方法'],
+    ['GB/T 33979 低温冷启动试验方法','-30℃ / -35℃ 冷启动判定条件与测试流程'],
+    ['GB/T 26990 车载氢系统技术条件','35 MPa / 70 MPa 储氢系统安全要求'],
+    ['GB/T 37244 燃料电池汽车用燃料氢气','氢气纯度 5.0 / 4.5 / 3.0 分级与杂质限值'],
+  ]},
+  {c:'台架测试', ico:'⌗', items:[
+    ['台架标定流程','预热 → 稳态点采集 → 极化曲线 → 动态响应 → 数据修正'],
+    ['稳态判定标准','电压波动 < ±5 mV 且持续 30 s 视为稳态'],
+    ['传感器误差修正','多点线性回归 + 满量程误差补偿'],
+    ['故障调试手册','超温 / 膜干 / 水淹 / 喘振 的排查顺序与处置'],
+  ]},
+  {c:'场景设计差异', ico:'◧', items:[
+    ['车载场景','高功率密度、快速动态响应、-30℃ 冷启动、振动耐受'],
+    ['发电场景','长寿命、高电效率、热电联供、稳态运行'],
+    ['便携场景','轻量化、低压空冷、快速启动、低噪声'],
+  ]},
+  {c:'行业阈值', ico:'◈', items:[
+    ['低温启动','-30℃ 通过 / -35℃ 优秀'],
+    ['耐久性','5000 h 衰减 < 10%'],
+    ['系统效率','≥ 45%（额定点）'],
+    ['单位氢耗','≤ 60 g/kWh（50% 效率基准）'],
+    ['单片一致性','最大偏差 < 30 mV'],
+  ]},
+];
+function viewKb(){
+  return `
+  <div class="sec-title">行业知识库</div>
+  ${KB.map(c=>`
+    <div class="card">
+      <div class="card-h">
+        <div class="li-ico" style="width:32px;height:32px;font-size:14px">${c.ico}</div>
+        <h3>${c.c}</h3>
+      </div>
+      ${c.items.map(it=>`
+        <div style="padding:11px 0;border-bottom:1px solid var(--line)">
+          <div style="font-size:12.5px;font-weight:600;margin-bottom:4px;color:#cfe6ff">${it[0]}</div>
+          <div style="font-size:11px;color:var(--mut);line-height:1.6">${it[1]}</div>
+        </div>`).join('')}
+    </div>`).join('')}
+  <div class="foot-note">
+    知识库内容持续更新 · 仅供学习参考<br>
+    实际应用请以最新国标与厂商规格为准
+  </div>`;
+}
+
+/* =========================================================
+   四、事件绑定与启动
+   ========================================================= */
+document.addEventListener('click', e=>{
+  const nav = e.target.closest('[data-nav]');
+  if(nav){ navigate(nav.dataset.nav); return; }
+});
+
+/* 全局渲染拦截：计算器绑定 */
+const _rv4 = renderView;
+renderView = function(){ _rv4(); if(S.view==='calc') bindCalc(); };
+
+window.addEventListener('resize', ()=>{
+  if(S.view === 'monitor') tickMonitor();
+  else if(S.view === 'sim' && $('#cv1')) {
+    // 简单重绘
+    const ev = new Event('resize');
+  }
+});
+
+/* 启动 */
+renderNav();
+navigate('dashboard');
+$('#chipPower').textContent = S.power + ' kW';
+
+/* 控制台版权信息 */
+console.log('%c氢枢 HyHub %cV1.0.0',
+  'font-size:16px;font-weight:800;color:#0a84ff',
+  'font-size:12px;color:#7d8fb3');
+console.log('%c版权所有 © 2026 【著作权人：戴 煜】 · 保留所有权利',
+  'font-size:11px;color:#5f7391');
+console.log('%c10–400kW 全域氢能全能平台 · 仿真 + 计算 + 监控 + 加氢运营',
+  'font-size:11px;color:#00d48a');
+</script>
+</body>
+</html>
