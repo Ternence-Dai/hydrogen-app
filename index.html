@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>氢电智算</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#0a1929; color:#e6f1ff; min-height:100vh; padding-bottom:80px; }
+.header { background:linear-gradient(135deg,#0077C8,#00A6FB); padding:20px; text-align:center; position:sticky; top:0; z-index:10; box-shadow:0 2px 12px rgba(0,166,251,.3); }
+.header h1 { font-size:22px; letter-spacing:2px; }
+.header p { font-size:12px; opacity:.9; margin-top:4px; }
+.container { padding:16px; max-width:800px; margin:0 auto; }
+.card { background:rgba(255,255,255,.06); border:1px solid rgba(0,166,251,.2); border-radius:12px; padding:16px; margin-bottom:14px; backdrop-filter:blur(10px); }
+.card h3 { color:#00A6FB; font-size:15px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+label { display:block; font-size:13px; color:#8aa6c1; margin:10px 0 4px; }
+input, select { width:100%; padding:11px 12px; background:rgba(0,0,0,.3); border:1px solid rgba(0,166,251,.3); border-radius:8px; color:#e6f1ff; font-size:15px; outline:none; transition:.2s; }
+input:focus, select:focus { border-color:#00A6FB; box-shadow:0 0 0 3px rgba(0,166,251,.15); }
+button { width:100%; padding:13px; background:linear-gradient(135deg,#0077C8,#00A6FB); border:none; border-radius:8px; color:#fff; font-size:15px; font-weight:600; margin-top:14px; cursor:pointer; transition:.2s; }
+button:active { transform:scale(.98); }
+.result { background:rgba(0,166,251,.1); border-left:3px solid #00A6FB; padding:12px; border-radius:6px; margin-top:14px; font-size:13px; line-height:1.9; white-space:pre-wrap; word-break:break-all; }
+.result:empty { display:none; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.chip { padding:7px 14px; background:rgba(0,166,251,.1); border:1px solid rgba(0,166,251,.3); border-radius:20px; font-size:12px; cursor:pointer; transition:.2s; }
+.chip.active { background:#00A6FB; color:#fff; border-color:#00A6FB; }
+.nav { position:fixed; bottom:0; left:0; right:0; background:#0d2137; display:flex; border-top:1px solid rgba(0,166,251,.2); z-index:20; }
+.nav-item { flex:1; text-align:center; padding:10px 4px; font-size:11px; color:#8aa6c1; cursor:pointer; transition:.2s; }
+.nav-item.active { color:#00A6FB; }
+.nav-item .ico { font-size:20px; display:block; margin-bottom:2px; }
+.page { display:none; }
+.page.active { display:block; }
+.warn { background:rgba(255,152,0,.15); border-left:3px solid #FF9800; padding:10px; border-radius:6px; margin-top:10px; font-size:12px; line-height:1.7; }
+canvas { max-height:280px; }
+@media(max-width:480px){ .container{padding:12px;} .card{padding:14px;} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ 氢电智算</h1>
+  <p>30kW~400kW 燃料电池仿真计算</p>
+</div>
+
+<div class="container">
+  <div class="page active" id="page-home">
+    <div class="card">
+      <h3> 快速开始</h3>
+      <p style="font-size:13px;line-height:1.8;color:#8aa6c1;">覆盖 30kW~400kW 燃料电池系统与测试台架<br>参数管理 · 工况仿真 · 工程计算 · 智能诊断</p>
+    </div>
+    <div class="card">
+      <h3> 功率分段</h3>
+      <div class="result" style="margin:0;background:transparent;border:none;padding:0;">
+小功率 30~80kW ｜ 乘用车 / 轻型物流车
+中功率 100~200kW ｜ 客车 / 重卡 / 工业发电
+大功率 250~400kW ｜ 重型装备 / 大型电站</div>
+    </div>
+  </div>
+
+  <div class="page" id="page-calc">
+    <div class="card">
+      <h3> 工程快捷计算</h3>
+      <div class="chips" id="calcTabs">
+        <div class="chip active" data-tab="h2">氢气消耗</div>
+        <div class="chip" data-tab="air">空气流量</div>
+        <div class="chip" data-tab="heat">热管理</div>
+      </div>
+      <div id="calc-h2">
+        <label>电堆功率 (kW)</label><input type="number" id="h2-p" value="120">
+        <label>电堆效率 (%)</label><input type="number" id="h2-e" value="55">
+        <button onclick="calcH2()">开始计算</button>
+        <div class="result" id="h2-r"></div>
+      </div>
+      <div id="calc-air" style="display:none">
+        <label>电堆功率 (kW)</label><input type="number" id="air-p" value="120">
+        <label>电堆效率 (%)</label><input type="number" id="air-e" value="55">
+        <label>空气过量系数 λ</label><input type="number" id="air-l" value="2.0" step="0.1">
+        <button onclick="calcAir()">开始计算</button>
+        <div class="result" id="air-r"></div>
+      </div>
+      <div id="calc-heat" style="display:none">
+        <label>电堆功率 (kW)</label><input type="number" id="heat-p" value="120">
+        <label>电堆效率 (%)</label><input type="number" id="heat-e" value="55">
+        <label>冷却液温差 ΔT (K)</label><input type="number" id="heat-dt" value="10">
+        <button onclick="calcHeat()">开始计算</button>
+        <div class="result" id="heat-r"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-sim">
+    <div class="card">
+      <h3> 全工况仿真</h3>
+      <div class="chips" id="simTabs">
+        <div class="chip active" data-t="steady">稳态额定</div>
+        <div class="chip" data-t="dynamic">动态变载</div>
+        <div class="chip" data-t="cold_start">低温冷启动</div>
+        <div class="chip" data-t="limit">极限边界</div>
+      </div>
+      <label>系统功率 (kW)</label><input type="number" id="sim-p" value="120">
+      <button onclick="runSim()" id="simBtn">运行仿真</button>
+      <div class="result" id="sim-r"></div>
+      <div class="warn" id="sim-warn" style="display:none"></div>
+    </div>
+    <div class="card" id="chartCard" style="display:none">
+      <h3> 极化曲线</h3>
+      <canvas id="polarChart"></canvas>
+    </div>
+  </div>
+
+  <div class="page" id="page-diag">
+    <div class="card">
+      <h3>喙 智能故障诊断</h3>
+      <label>系统功率 (kW)</label><input type="number" id="diag-p" value="120">
+      <label>描述故障现象</label><input type="text" id="diag-s" placeholder="如：电压低、水淹、一致性差">
+      <div class="chips" style="margin-top:10px;">
+        <div class="chip" onclick="fillDiag('部分单体电压低于0.5V，堆温异常，怀疑水淹')">示例：水淹</div>
+        <div class="chip" onclick="fillDiag('高频阻抗增大，膜干，温度偏高')">示例：膜干</div>
+        <div class="chip" onclick="fillDiag('单体电压离散度增大，一致性差')">示例：一致性差</div>
+      </div>
+      <button onclick="runDiag()">开始诊断</button>
+      <div class="result" id="diag-r"></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-kb">
+    <div class="card"><h3> 国标规范</h3><div class="result" style="margin:0;background:transparent;border:none;padding:0;font-size:13px;">· GB/T 24549 燃料电池电动汽车 安全要求<br>· GB/T 28816 燃料电池 术语<br>· GB/T 33978 道路车辆用质子交换膜燃料电池模块</div></div>
+    <div class="card"><h3> 测试规范</h3><div class="result" style="margin:0;background:transparent;border:none;padding:0;font-size:13px;">· 极化曲线：稳态 I-V 曲线测试<br>· EIS：10mHz~10kHz，交流幅值 5%<br>· 冷启动：-30℃ 启动时间 &lt; 30s</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-item active" onclick="go('home',this)"><span class="ico"></span>首页</div>
+  <div class="nav-item" onclick="go('calc',this)"><span class="ico"></span>计算</div>
+  <div class="nav-item" onclick="go('sim',this)"><span class="ico"></span>仿真</div>
+  <div class="nav-item" onclick="go('diag',this)"><span class="ico">喙</span>诊断</div>
+  <div class="nav-item" onclick="go('kb',this)"><span class="ico"></span>知识库</div>
+</div>
+
+<script>
+function go(id, el) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('page-' + id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); window.scrollTo(0,0); }
+document.querySelectorAll('#calcTabs .chip').forEach(c => { c.onclick = () => { document.querySelectorAll('#calcTabs .chip').forEach(x => x.classList.remove('active')); c.classList.add('active'); document.querySelectorAll('[id^=calc-]').forEach(p => p.style.display='none'); document.getElementById('calc-' + c.dataset.tab).style.display='block'; }; });
+let simType = 'steady';
+document.querySelectorAll('#simTabs .chip').forEach(c => { c.onclick = () => { document.querySelectorAll('#simTabs .chip').forEach(x => x.classList.remove('active')); c.classList.add('active'); simType = c.dataset.t; }; });
+
+function calcH2() { const p = +document.getElementById('h2-p').value; const e = +document.getElementById('h2-e').value / 100; const mass = (p * 0.001) / (120 * e) * 3600; const vol = mass * 11.126; document.getElementById('h2-r').textContent = `质量流量：${mass.toFixed(4)} kg/h\n体积流量：${vol.toFixed(2)} Nm³/h`; }
+function calcAir() { const p = +document.getElementById('air-p').value; const e = +document.getElementById('air-e').value / 100; const l = +document.getElementById('air-l').value; const theo = p * 0.2696 / e / 0.232; const actual = theo * l; document.getElementById('air-r').textContent = `理论空气量：${theo.toFixed(2)} kg/h\n实际供气量：${actual.toFixed(2)} kg/h`; }
+function calcHeat() { const p = +document.getElementById('heat-p').value; const e = +document.getElementById('heat-e').value / 100; const dt = +document.getElementById('heat-dt').value; const heat = p * (1/e - 1); document.getElementById('heat-r').textContent = `产热量：${heat.toFixed(2)} kW\n冷却液流量：${(heat/(4.18*dt)).toFixed(4)} kg/s`; }
+
+let chart;
+function runSim() {
+  document.getElementById('simBtn').disabled = true; document.getElementById('simBtn').textContent = '仿真中...';
+  setTimeout(() => {
+    document.getElementById('simBtn').disabled = false; document.getElementById('simBtn').textContent = '运行仿真';
+    let n = 80, i_max = simType==='cold_start'?1.0:(simType==='limit'?2.5:2.0), temp = simType==='cold_start'?-20:80;
+    let e0 = 1.23 + 0.00085*(temp-25) + 0.0125*Math.log(2);
+    let cd=[], v=[], pd=[], warn=[];
+    for(let k=1;k<=n;k++){ let i = i_max*k/n; let eta_act=0.06*Math.log(i/0.001); let eta_ohm=i*0.15; let eta_conc=-0.08*Math.log(1-i/2.2); let volt=Math.max(0, e0-eta_act-eta_ohm-eta_conc); cd.push(i); v.push(volt); pd.push(volt*i); }
+    if(simType==='dynamic') warn.push("动态变载：建议空压机响应时间 < 200ms");
+    if(simType==='cold_start') warn.push("低温冷启动：需启用外部加热或催化燃烧预热");
+    if(simType==='limit') warn.push("边界工况：电流密度超过 2.0 A/cm² 存在碳腐蚀风险");
+    document.getElementById('sim-r').textContent = `峰值功率密度：${Math.max(...pd).toFixed(3)} W/cm²\n系统功率：${document.getElementById('sim-p').value} kW`;
+    const wb = document.getElementById('sim-warn'); if(warn.length){ wb.style.display='block'; wb.textContent='⚠️ '+warn.join('\n⚠️ '); } else wb.style.display='none';
+    document.getElementById('chartCard').style.display='block';
+    if(chart) chart.destroy();
+    chart = new Chart(document.getElementById('polarChart'), { type:'line', data:{ labels: cd.map(x=>x.toFixed(2)), datasets:[ {label:'电压 (V)', data:v, borderColor:'#00A6FB', tension:.3, pointRadius:0, yAxisID:'y'}, {label:'功率密度 (W/cm²)', data:pd, borderColor:'#FF6B6B', tension:.3, pointRadius:0, yAxisID:'y1'} ]}, options:{ responsive:true, plugins:{legend:{labels:{color:'#e6f1ff'}}}, scales:{ x:{ticks:{color:'#8aa6c1'}}, y:{position:'left', ticks:{color:'#00A6FB'}}, y1:{position:'right', ticks:{color:'#FF6B6B'}, grid:{display:false}} } } });
+  }, 500);
+}
+
+function fillDiag(t){ document.getElementById('diag-s').value = t; }
+function runDiag() {
+  const s = document.getElementById('diag-s').value; const p = document.getElementById('diag-p').value;
+  if(!s){ alert('请输入现象'); return; }
+  let r = '';
+  if(s.includes('水淹')) r = `【诊断结果】${p}kW 系统疑似水淹\n【故障位置】电堆本体 / 阴极水管理\n【优化建议】\n1. 提升冷却液温度 3~5℃\n2. 增加空气过量系数\n3. 检查背压阀开度`;
+  else if(s.includes('膜干')) r = `【诊断结果】${p}kW 系统疑似膜干\n【故障位置】水热管理\n【优化建议】\n1. 降低冷却液温度\n2. 提高增湿器温度\n3. 提高进气相对湿度`;
+  else r = `【诊断结果】${p}kW 系统综合诊断\n【建议】请提供更详细的电压、温度、阻抗等数据。`;
+  document.getElementById('diag-r').textContent = r;
+}
+</script>
+</body>
+</html>
